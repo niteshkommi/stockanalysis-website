@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %} Reports {% endblock %}
+{% block content %}
+<style>
+    input[type=search]{
+        text-transform: uppercase;
+    }
+</style>
+<div class="reports-wrapper p-5">
+    <table class="table table-striped table-small table-bordered text-center" id="reportTable">
+        <thead>
+            <tr>
+                <th scope="col">SYMBOL</th>
+                <th scope="col">REPORTS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in stock_data %}
+            <tr>
+                <th scope="row">{{ data.symbol }}</th>
+                <td> <a href="{{ data.report.url }}" class="btn btn-outline-primary rounded">Download</a> </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

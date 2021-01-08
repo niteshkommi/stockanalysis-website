@@ -1,0 +1,71 @@
+{% extends 'accounts/base_login.html' %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+{% load static %}
+{% block title %} Register {% endblock %}
+{% block content %}
+
+
+<div class="wrapper">
+    <div class="row">
+        <div class="login-left col-lg-6">
+            <div class="login-left-wrapper">
+                <a href="{% url 'index' %}">
+                    <img src="{% static 'images/login_logo.png' %}" alt="">
+                </a>
+            </div>
+        </div>
+        <div class="login-right col-lg-6">
+            <div class="login-right-wrapper">
+                <center>
+                    <h5>REGISTER</h5>
+                </center>
+                {% if form.errors %}
+                {% for field in form %}
+                {% for error in field.errors %}
+                <div class="alert alert-danger text-center">
+                    <small>{{ error|escape }}</small>
+                </div>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <div class="alert alert-danger text-center">
+                    <small>{{ error|escape }}</small>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group p-0 m-0">
+                        {% render_field form.username placeholder="Username" %}
+                        <span class="bmd-help">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</span>
+                    </div>
+                    <div class="form-group p-0 m-0">
+                        {% render_field form.email placeholder="E-Mail" %}
+                    </div>
+                    <div class="form-group p-0 m-0">
+                        {% render_field form.password1 placeholder="Password" %}
+                        <span class="bmd-help">Your password can’t be your personal information.</span>
+                        <span class="bmd-help">Your password must contain at least 8 characters.</span>
+                        <span class="bmd-help">Your password can’t be a commonly used password.</span>
+                        <span class="bmd-help">Your password can’t be entirely numeric.</span>
+                    </div>
+                    <div class="form-group p-0 m-0">
+                        {% render_field form.password2 placeholder="Confirm Password" %}
+                        <span class="bmd-help">Enter the same password as before, for verification.</span>
+                    </div>
+                    <center>
+                    <h6 class="mt-4">By signing, you acccept these <a href="#">Terms and Conditions.</a> </h6>
+                    <button type="submit" class="btn submitBtn">SIGN IN</button> <br>
+                    <!-- <a href="#">Forgot Password?</a> -->
+                    <hr class="hr-text" data-content="OR">
+                    <a href="{% url 'login' %}" class="btn btn-outline-success linkBtn">LOG IN</a> <br>
+                    </center>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

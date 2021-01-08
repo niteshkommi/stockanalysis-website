@@ -1,0 +1,83 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %} Search Stocks {% endblock %}
+{% block content %}
+
+<div class="search-wrapper p-2">
+    <div class="search-form-wrapper p-2">
+         <!-- <form method="POST" class="form-inline">
+            <div class="col-auto border-0">
+                <select class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                    <option selected disabled>TIME FRAME</option>
+                    <optgroup label="HOURS">
+                        <option value="day">1 HOUR</option>
+                        <option value="week">2 HOURS</option>
+                        <option value="month">3 HOURS</option>
+                        <option value="month">4 HOURS</option>
+                    </optgroup>
+                    <optgroup label="DAYS">
+                        <option value="day">1 DAY</option>
+                        <option value="week">1 WEEK</option>
+                        <option value="month">1 MONTH</option>
+                    </optgroup>
+                </select>
+            </div>
+            {% csrf_token %}
+            <input type="text" name="ticker" placeholder="Enter a Ticker" class="form-control mb-3 mr-sm-2"
+                aria-label="Search" required autofocus="true"> 
+            <button type="submit" class="btn btn-outline-success my-5 my-sm-0">SEARCH</button>
+        </form> -->
+        {% if error %}
+        <div class="alert alert-warning text-center">
+            {{ error }}
+        </div>
+        {% endif %}
+        {% for data in stock_data %}
+        <div class="alert alert-success text-center">
+            {{ status }}
+        </div>
+        {% if data.symbol %}
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col">SYMBOL</th>
+                    <th scope="col">DATE</th>
+                    {% if data.call > data.stopLoss %}
+                    <th scope="col">BUY ABOVE</th>
+                    {% else %}
+                    <th scope="col">SELL BELOW</th>
+                    {% endif %}
+                    <th scope="col">STOP LOSS</th>
+                    <th scope="col">TARGET 1</th>
+                    <th scope="col">TARGET 2</th>
+                    <th scope="col">TARGET 3</th>
+                    <th scope="col">TARGET 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{{ data.symbol }}</th>
+                    <td>{{ data.date }}</td>
+                    {% if data.call > data.stopLoss %}
+                    <td> <strong class="text-success">{{ data.call }} <i class="fas fa-arrow-up"></i> </strong> </td>
+                    {% else %}
+                    <td> <strong class="text-success">{{ data.call }} <i class="fas fa-arrow-down"></i> </strong> </td>
+                    {% endif %}
+                    <td> <strong class="text-danger">{{ data.stopLoss }}</strong> </td>
+                    <td> {{ data.Target1 }}</td>
+                    <td> {{ data.Target2 }}</td>
+                    <td> {{ data.Target3 }}</td>
+                    <td> {{ data.Target4 }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% endif %}
+
+        <h5>Ye Testing Hai : {{ data.status }}</h5>
+
+        <!-- <a href="{{ data.report.url }}"> Download </a> -->
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

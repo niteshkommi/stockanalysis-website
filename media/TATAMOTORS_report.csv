@@ -1,0 +1,3 @@
+Date,Close_Price,Signal_Date,Call,Stop_Loss,Target_1,Target_2,Target_3,Target_4,Status
+2021-01-01,186.5,2020-12-21,170.15,171.88,169.07,168.2,167.34,166.1,Final Target Reached
+2021-01-04,191.3,2020-12-21,170.15,171.88,169.07,168.2,167.34,166.1,Final Target Reached

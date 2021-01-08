@@ -1,0 +1,168 @@
+if request.method == 'POST':
+
+        symbol = request.POST.get('ticker')
+
+        n = 48
+        j = 0
+        hikenCandle = []
+        doji = []
+        swing = []
+        dateTime = []
+        today_date = date.today().strftime("%d-%m-%Y")
+        six_months = date.today() - relativedelta(months=+6)
+        six_months = six_months.strftime("%d-%m-%Y")
+
+        try:
+            fetch_url = "https://www.nseindia.com/api/historical/cm/equity?symbol=" + \
+                str(symbol)+"&series=[%22EQ%22]&from=" + \
+                str(six_months)+"&to="+str(today_date)+""
+            historical_data = nsefetch(fetch_url)
+            historical_data = pd.DataFrame(historical_data['data'])
+            openPrice = historical_data['CH_OPENING_PRICE']
+            highPrice = historical_data['CH_TRADE_HIGH_PRICE']
+            lowPrice = historical_data['CH_TRADE_LOW_PRICE']
+            closePrice = historical_data['CH_CLOSING_PRICE']
+
+            candle = HEIKIN(openPrice[n], highPrice[n],
+                            lowPrice[n], closePrice[n], openPrice[n+1],
+                            closePrice[n+1])
+
+            hikenCandle.append(candle)
+
+            for i in range(n-1, -1, -1):
+                candle = HEIKIN(openPrice[i], highPrice[i], lowPrice[i],
+                                closePrice[i], hikenCandle[j][0], hikenCandle[j][3])
+
+                hikenCandle.append(candle)
+                dateTime.append(historical_data['mTIMESTAMP'][i])
+                j += 1
+
+            stochasticHiken = stochastic(hikenCandle)
+            del stochasticHiken[:4]
+
+            for i in hikenCandle:
+                doji.append(isDoji(i))
+
+            del doji[:4]
+            del dateTime[:3]
+
+            for i in range(1, len(stochasticHiken)):
+                if ((stochasticHiken[i]['k'] < stochasticHiken[i]['d']) and stochasticHiken[i-1]['k'] > stochasticHiken[i-1]['d']) or ((stochasticHiken[i]['k'] > stochasticHiken[i]['d']) and stochasticHiken[i-1]['k'] < stochasticHiken[i-1]['d']):
+                    swing.append(i)
+
+            for i in range(len(stochasticHiken)):
+                if (stochasticHiken[i]['k'] < stochasticHiken[i]['d'] and stochasticHiken[i-1]['k'] > stochasticHiken[i-1]['d']):
+                    try:
+                        if doji[i]:
+                            if i != 0:
+                                swingIndex = swing.index(i)
+                                if swingIndex != 0:
+                                    temp = maxMin(
+                                        hikenCandle[swing[swingIndex-1] + 4: swing[swingIndex] + 4])
+                                    testList = fibonacciDown(
+                                        temp[0], temp[1])
+                                    # temp = (doji[i][1] * 0.3) / 100
+                                    # stopLoss = (doji[i][1] + temp)
+                                    lastCandle = i
+                                    callTime = dateTime[i]
+                        elif doji[i-1] or doji[i+1] or doji[i+2]:
+                            if i != 0:
+                                swingIndex = swing.index(i)
+                                if swingIndex != 0:
+                                    temp = maxMin(
+                                        hikenCandle[swing[swingIndex-1] + 4: swing[swingIndex] + 4])
+                                    testList = fibonacciDown(
+                                        temp[0], temp[1])
+                                    # temp = (doji[i-1][1] * 0.3) / 100
+                                    # stopLoss = (doji[i-1][1] + temp)
+                                    lastCandle = i
+                                    callTime = dateTime[i]
+                    except (IndexError):
+                        pass
+                elif (stochasticHiken[i]['k'] > stochasticHiken[i]['d'] and stochasticHiken[i-1]['k'] < stochasticHiken[i-1]['d']):
+                    try:
+                        if doji[i]:
+                            if i != 0:
+                                swingIndex = swing.index(i)
+                                if swingIndex > 0:
+                                    temp = maxMin(
+                                        hikenCandle[swing[swingIndex-1] + 4: swing[swingIndex] + 4])
+                                    testList = fibonacciUp(
+                                        temp[0], temp[1])
+                                    # temp = (doji[i][2] * 0.3) / 100
+                                    # stopLoss = (doji[i][2] - temp)
+                                    lastCandle = i
+                                    callTime = dateTime[i]
+                        elif doji[i-1] or doji[i+1] or doji[i+2]:
+                            if i != 0:
+                                swingIndex = swing.index(i)
+                                if swingIndex > 0:
+                                    temp = maxMin(
+                                        hikenCandle[swing[swingIndex-1] + 4: swing[swingIndex] + 4])
+                                    testList = fibonacciUp(
+                                        temp[0], temp[1])
+                                    # temp = (doji[i-1][2] * 0.3) / 100
+                                    # stopLoss = (doji[i-1][2] - temp)
+                                    lastCandle = i
+                                    callTime = dateTime[i]
+                    except (IndexError):
+                        pass
+
+            try:
+                h_l = maxMin(hikenCandle[lastCandle + 5:])
+                if (testList[-1][0] > testList[-1][5]):
+                    if (h_l[0] >= testList[-1][1] and h_l[0] < testList[-1][2]):
+                        status = "Target 1 Reached"
+                    elif (h_l[0] >= testList[-1][2] and h_l[0] < testList[-1][3]):
+                        status = "Target 2 Reached"
+                    elif (h_l[0] >= testList[-1][3]) and h_l[0] < testList[-1][4]:
+                        status = "Target 3 Reached"
+                    elif (h_l[0] >= testList[-1][4]):
+                        status = "Final Target Reached"
+                    elif (h_l[1] <= testList[-1][5]):
+                        status = "Stop Loss has occured"
+                    else:
+                        status = "Awaiting Targets"
+                else:
+                    if (h_l[1] <= testList[-1][1] and h_l[1] > testList[-1][2]):
+                        status = "Target 1 Reached"
+                    elif (h_l[1] <= testList[-1][2] and h_l[1] > testList[-1][3]):
+                        status = "Target 2 Reached"
+                    elif (h_l[1] <= testList[-1][3]) and h_l[1] > testList[-1][4]:
+                        status = "Target 3 Reached"
+                    elif (h_l[1] <= testList[-1][4]):
+                        status = "Final Target Reached"
+                    elif (h_l[0] >= testList[-1][5]):
+                        status = "Stop Loss has occured"
+                    else:
+                        status = "Awaiting Targets"
+
+                context = {
+                    "symbol": historical_data['CH_SYMBOL'][1],
+                    "date": callTime,
+                    "call": round(testList[-1][0], 2),
+                    "stop_loss": round(testList[-1][5], 2),
+                    "target_1": round(testList[-1][1], 2),
+                    "target_2": round(testList[-1][2], 2),
+                    "target_3": round(testList[-1][3], 2),
+                    "target_4": round(testList[-1][4], 2),
+                    "status": status,
+                }
+            except(ValueError):
+                status = "Awaiting Targets"
+                context = {
+                    "symbol": historical_data['CH_SYMBOL'][1],
+                    "date": callTime,
+                    "call": round(testList[-1][0], 2),
+                    "stop_loss": round(testList[-1][5], 2),
+                    "target_1": round(testList[-1][1], 2),
+                    "target_2": round(testList[-1][2], 2),
+                    "target_3": round(testList[-1][3], 2),
+                    "target_4": round(testList[-1][4], 2),
+                    "status": status,
+                    }
+
+
+        except (KeyError):
+            keyerror = "Please provide a correct ticker"
+            context = { "keyerror": keyerror }

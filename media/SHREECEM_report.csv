@@ -1,0 +1,3 @@
+Date,Close_Price,Signal_Date,Call,Stop_Loss,Target_1,Target_2,Target_3,Target_4,Status
+2021-01-01,23950.3,2021-01-01,24035.45,24302.25,23870.4,23737.0,23603.6,23413.68,Awaiting Targets
+2021-01-04,24034.2,2021-01-01,24035.45,24302.25,23870.4,23737.0,23603.6,23413.68,Target 1 Reached

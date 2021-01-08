@@ -1,0 +1,36 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %} Profile {% endblock %}
+{% block content %}
+
+<div class="scanner-wrapper">
+    <div class="scanner-inner text-center">
+        <h3>Hello {{ user.username }} !</h3>
+    </div>
+</div>
+
+<div class="profile-wrapper">
+    <div class="profile">
+        <form method="POST">
+            <fieldset>
+                <legend>PROFILE</legend>
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} text-center">
+                    <small>{{ message }}</small>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="form-group p-0">
+                    {{ field }}
+                </div>
+                {% endfor %}
+                <p>Want to change password? <a href="#"> Click Here</a></p>
+                <button type="submit" class="btn submitBtn">Update</button> <br>
+            </fieldset>
+        </form>
+    </div>
+</div>
+{% endblock %}

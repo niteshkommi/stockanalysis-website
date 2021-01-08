@@ -1,0 +1,173 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %} Dashboard {% endblock %}
+{% block content %}
+    
+<div class="scanner-wrapper">
+    <div class="scanner-inner">
+        <form class="form-inline m-0">
+            <div class="col-auto my-1 p-0 border-0">
+                <select class="custom-select mr-sm-2 bg-light" id="inlineFormCustomSelect">
+                    <option selected disabled>SELECT TYPE </option>
+                    <option value="day">EQUITY</option>
+                    <option value="week">EQUITY DERIVATIVES</option>
+                    <option value="month">CURRENCY DERIVATIVES</option>
+                    <option value="month">FOREX</option>
+                </select>
+            </div>
+            <div class="col-auto my-1 border-0">
+                <select class="custom-select mr-sm-2 bg-light" id="inlineFormCustomSelect">
+                    <option selected disabled>SELECT TIME FRAME </option>
+                    <optgroup label="HOURS">
+                        <option value="day">1 HOUR</option>
+                        <option value="week">2 HOURS</option>
+                        <option value="month">3 HOURS</option>
+                        <option value="month">4 HOURS</option>
+                    </optgroup>
+                    <optgroup label="DAYS">
+                        <option value="day">1 DAY</option>
+                        <option value="week">1 WEEK</option>
+                        <option value="month">1 MONTH</option>
+                    </optgroup>
+                </select>
+            </div>
+            <button type="submit" class="btn my-2 my-sm-0">scan</button>
+        </form>
+    </div>
+</div>
+<!-- <div class="search-form-wrapper mt-3">
+    {% if error %}
+        <div class="alert alert-warning text-center">
+            {{ error }}
+        </div>
+        {% endif %}
+        {% for data in search_data %}
+        <div class="alert alert-success text-center">
+            {{ status }}
+        </div>
+        {% if data.symbol %}
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th scope="col">SYMBOL</th>
+                    <th scope="col">DATE</th>
+                    {% if data.call > data.stopLoss %}
+                    <th scope="col">BUY ABOVE</th>
+                    {% else %}
+                    <th scope="col">SELL BELOW</th>
+                    {% endif %}
+                    <th scope="col">STOP LOSS</th>
+                    <th scope="col">TARGET 1</th>
+                    <th scope="col">TARGET 2</th>
+                    <th scope="col">TARGET 3</th>
+                    <th scope="col">TARGET 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">{{ data.symbol }}</th>
+                    <td>{{ data.date }}</td>
+                    {% if data.call > data.stopLoss %}
+                    <td> <strong class="text-success">{{ data.call }} <i class="fas fa-arrow-up"></i> </strong> </td>
+                    {% else %}
+                    <td> <strong class="text-success">{{ data.call }} <i class="fas fa-arrow-down"></i> </strong> </td>
+                    {% endif %}
+                    <td> <strong class="text-danger">{{ data.stopLoss }}</strong> </td>
+                    <td> {{ data.Target1 }}</td>
+                    <td> {{ data.Target2 }}</td>
+                    <td> {{ data.Target3 }}</td>
+                    <td> {{ data.Target4 }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <hr>
+        {% endif %}
+        {% endfor %}
+</div> -->
+<div class="dashboard-wrapper p-3">
+    <div class="stock-list-wrapper">
+        <div class="row">
+            <div class="list-left-wrapper col-12 pl-3 pr-3">
+                <h4>BUY CALLS</h4>
+                <table class="table table-striped bg-light table-small table-bordered table-hover text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">SYMBOL</th>
+                            <th scope="col">CLOSING PRICE</th>
+                            <th scope="col">BUY ABOVE</th>
+                            <th scope="col">STOP LOSS</th>
+                            <th scope="col">TARGET 1</th>
+                            <th scope="col">TARGET 2</th>
+                            <th scope="col">TARGET 3</th>
+                            <th scope="col">TARGET 4</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if stock_data %}
+                            {% for stocks in stock_data %}
+                                {% if stocks.call > stocks.stopLoss %}
+                                    <tr>
+                                        <th scope="row">{{ stocks.symbol }}</th>
+                                        <td> {{ stocks.closePrice }} </td>
+                                        <td> <strong class="text-success"> {{ stocks.call }} </td>
+                                        <td> <strong class="text-danger"> {{ stocks.stopLoss }} </strong></td>
+                                        <td> {{ stocks.Target1 }}</td>
+                                        <td> {{ stocks.Target2 }}</td>
+                                        <td> {{ stocks.Target3 }}</td>
+                                        <td> {{ stocks.Target4 }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No Records Found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="list-right-wrapper col-12 pl-3 pr-3">
+                <h4>SELL CALLS</h4>
+                <table class="table table-striped table-small table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">SYMBOL</th>
+                            <th scope="col">CLOSING PRICE</th>
+                            <th scope="col">SELL BELOW</th>
+                            <th scope="col">STOP LOSS</th>
+                            <th scope="col">TARGET 1</th>
+                            <th scope="col">TARGET 2</th>
+                            <th scope="col">TARGET 3</th>
+                            <th scope="col">TARGET 4</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if stock_data %}
+                            {% for stocks in stock_data %}
+                                {% if stocks.call < stocks.stopLoss %}
+                                    <tr>
+                                        <th scope="row">{{ stocks.symbol }}</th>
+                                        <td> {{ stocks.closePrice }} </td>
+                                        <td> <strong class="text-success"> {{ stocks.call }} </td>
+                                        <td> <strong class="text-danger"> {{ stocks.stopLoss }} </strong></td>
+                                        <td> {{ stocks.Target1 }}</td>
+                                        <td> {{ stocks.Target2 }}</td>
+                                        <td> {{ stocks.Target3 }}</td>
+                                        <td> {{ stocks.Target4 }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="8">No Records Found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

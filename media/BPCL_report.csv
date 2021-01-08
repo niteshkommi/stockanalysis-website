@@ -1,0 +1,3 @@
+Date,Close_Price,Signal_Date,Call,Stop_Loss,Target_1,Target_2,Target_3,Target_4,Status
+2021-01-01,381.95,2021-01-01,381.86,384.23,380.39,379.21,378.02,376.33,Awaiting Targets
+2021-01-04,395.35,2021-01-01,381.86,384.23,380.39,379.21,378.02,376.33,Stop Loss has occured

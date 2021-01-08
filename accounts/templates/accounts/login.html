@@ -1,0 +1,42 @@
+{% extends 'accounts/base_login.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block title %} Login {% endblock %}
+{% block content %}
+<div class="wrapper">
+    <div class="row">
+        <div class="login-left col-lg-6">
+            <div class="login-left-wrapper">
+                <a href="{% url 'index' %}"> 
+                    <img src="{% static 'images/login_logo.png' %}" alt="">
+                </a>
+            </div>
+        </div>
+        <div class="login-right col-lg-6">
+            <div class="login-right-wrapper">
+                <center><h5>LOGIN</h5></center>
+                <form method="POST">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} text-center">
+                                <small>{{ message }}</small>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    {% csrf_token %}
+                    <input type="text" name="username" placeholder="Username" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <center>
+                        <h6>By login, you acccept these <a href="#">Terms and Conditions.</a> </h6>
+                        <button type="submit" class="btn submitBtn">LOG IN</button> <br>
+                        <a href="#">Forgot Password?</a>
+                        <hr class="hr-text" data-content="OR">
+                        <a href="{% url 'register' %}" class="btn btn-outline-success linkBtn">REGISTER</a> <br>
+                    </center>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

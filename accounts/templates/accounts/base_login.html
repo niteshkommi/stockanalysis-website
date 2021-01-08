@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap-material-design.min.css' %}"
+        integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+
+
+    <!-- Favicon  -->
+    <link rel="shortcut icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+    <title> {% block title %} {% endblock %} </title>
+</head>
+
+<body>
+
+    <!-- Address Bar -->
+    <div class="address-bar-wrapper p-1">
+        <div class="address-bar d-flex flex-row justify-content-between">
+            <div class="left">
+                <ul>
+                    <li><a href="">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="right">
+                <ul>
+                    <li><a href="">Support</a></li>
+                    <li><a href="">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% block content %}
+    {% endblock %}
+    <!-- JQuery JS -->
+    <script src="{% static 'js/jquery.3.5.1.js' %}"></script>
+
+    <!-- Popper JS  -->
+    <script src="{% static 'js/popper.js' %}"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="{% static 'js/bootstrap-material-design.js' %}"></script>
+    <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
+
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
